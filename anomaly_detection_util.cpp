@@ -73,6 +73,12 @@ float dev(Point p, Line l) {
     return fabs(l.f(p.x) - p.y);
 }
 
+//Creates a points Arr by using two arrays of floats
+void createPointArr(Point **&p, float *f1, float *f2, int size) {
+    for (int i = 0; i < size; i++) {
+        p[i] = new Point(f1[i], f2[i]);
+    }
+}
 
 
 
