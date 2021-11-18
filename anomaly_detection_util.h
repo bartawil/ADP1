@@ -1,4 +1,10 @@
-
+/*
+ * anomaly_detection_util.h
+ *
+ * Author: 209215490 Bar Tawil
+ *         208478453 Anastasiya Khizgiyaev
+ *
+ */
 #ifndef ANOMALYDETECTORUTIL_H_
 #define ANOMALYDETECTORUTIL_H_
 
@@ -39,5 +45,7 @@ float dev(Point p,Point** points, int size);
 
 // returns the deviation between point p and the line
 float dev(Point p,Line l);
+
+void createPointArr(Point **&p, float *f1, float *f2, int size);
 
 #endif
