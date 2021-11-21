@@ -32,7 +32,8 @@ TimeSeries::TimeSeries(const char *CSVfileName) {
     while (getline(ss, val, ',')) {
         this->features.push_back(val);
         // insert the map
-        this->data.insert({ val, values });
+        this->data[val] = values;
+        //this->data.insert({ val, values });
     }
 
     // extract all values line by line

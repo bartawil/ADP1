@@ -53,7 +53,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             // create linear reg line
             auto tmp2 = data.find(c)->second;
             float *v2 = tmp2.data();
-            auto p = new Point*[dataSize];
+            auto p = new Point *[dataSize];
             createPointArr(p, v1, v2, dataSize);
             cfStruct.lin_reg = linear_reg(p, dataSize);
             // find the dev of each line
@@ -67,6 +67,8 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             cfStruct.threshold = maxDev * 1.1;
             // push the struct to vector of correlated features
             this->cf.push_back(cfStruct);
+            deletePoints(p, dataSize);
+            delete[] p;
         }
     }
 }
@@ -88,7 +90,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
         float *v1 = t1.data();
         auto t2 = data.find(f2)->second;
         float *v2 = t2.data();
-        auto p = new Point*[dataSize];
+        auto p = new Point *[dataSize];
         createPointArr(p, v1, v2, dataSize);
 
         // check if there are anomaly by Dev method and the cf threshold
@@ -100,6 +102,8 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
                 ar.push_back(AnomalyReport(f1 + "-" + f2, j + 1));
             }
         }
+        deletePoints(p, dataSize);
+        delete[] p;
     }
     return ar;
 }

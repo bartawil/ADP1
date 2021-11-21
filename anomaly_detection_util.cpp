@@ -80,5 +80,12 @@ void createPointArr(Point **&p, float *f1, float *f2, int size) {
     }
 }
 
+// free all points form the Point array
+void deletePoints(Point **&p, int size) {
+    for (int i = 0; i < size; i++) {
+        delete p[i];
+    }
+}
+
 
 

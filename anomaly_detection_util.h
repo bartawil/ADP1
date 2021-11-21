@@ -46,6 +46,10 @@ float dev(Point p,Point** points, int size);
 // returns the deviation between point p and the line
 float dev(Point p,Line l);
 
+//Creates a points Arr by using two arrays of floats
 void createPointArr(Point **&p, float *f1, float *f2, int size);
+
+// free all points form the Point array
+void deletePoints(Point **&p, int size);
 
 #endif
