@@ -6,6 +6,7 @@
  *
  */
 #include "SimpleAnomalyDetector.h"
+#include <iterator>
 
 SimpleAnomalyDetector::SimpleAnomalyDetector() {
     // TODO Auto-generated constructor stub
@@ -76,14 +77,17 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
 vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
     // return value
     vector<AnomalyReport> ar;
+
     // data info
     map<string, vector<float>> data = ts.getData();
     int dataSize = ts.csvSize();
+    correlatedFeatures cfStruct;
 
-    int cfSize = this->cf.size();
-    for (int i = 0; i < cfSize; i++) {
+    // Declaring iterator to the cf vector
+    vector<correlatedFeatures>::iterator it;
+    for (it = this->cf.begin(); it != this->cf.end(); it++) {
         // create points arr of the correlated features
-        correlatedFeatures cfStruct = this->cf.at(i);
+        cfStruct = *it;
         string f1 = cfStruct.feature1;
         string f2 = cfStruct.feature2;
         auto t1 = data.find(f1)->second;
