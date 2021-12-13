@@ -8,7 +8,6 @@
 #ifndef ANOMALYDETECTORUTIL_H_
 #define ANOMALYDETECTORUTIL_H_
 
-
 float avg(const float* x, int size);
 
 // returns the variance of X and Y
