@@ -21,6 +21,8 @@ struct correlatedFeatures {
     float corrlation;
     Line lin_reg;
     float threshold;
+    Point point = Point(0,0);
+    float radius = 0;
 };
 
 
@@ -38,6 +40,10 @@ public:
     vector<correlatedFeatures> getNormalModel() {
         return cf;
     }
+
+    virtual void learnHelper(Point** points, correlatedFeatures &cf, size_t size)=0;
+
+    virtual void detectHelper(Point** points, correlatedFeatures &cf, vector<AnomalyReport> &ar, size_t size)=0;
 };
 
 

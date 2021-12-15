@@ -29,33 +29,34 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     // finding correlated couples
     for (int i = 0; i < featureSize; i++) {
         string f1 = features.at(i);
-        auto tmp1 = data.find(f1)->second;
-        float *v1 = tmp1.data();
+        float *v1 = data.find(f1)->second.data();
         // most correlated to f1
         string c;
         // max correlation for f1
         float maxC = 0;
         for (int j = i + 1; j < featureSize; j++) {
             string f2 = features.at(j);
-            auto tmp2 = data.find(f2)->second;
-            float *v2 = tmp2.data();
+            float *v2 = data.find(f2)->second.data();
             // correlation between f1 and f2
             float tmpC = fabs(pearson(v1, v2, dataSize));
             // the algorithm threshold for correlation is 0.9
-            if (tmpC > maxC && tmpC >= 0.9) {
+            if (tmpC > maxC) {
                 maxC = tmpC;
                 c = f2;
             }
         }
-        if (maxC != 0) {
+        if (maxC >= 0.5) {
             cfStruct.corrlation = maxC;
             cfStruct.feature1 = f1;
             cfStruct.feature2 = c;
             // create linear reg line
-            auto tmp2 = data.find(c)->second;
-            float *v2 = tmp2.data();
+            float *v2 = data.find(c)->second.data();
             auto p = new Point *[dataSize];
             createPointArr(p, v1, v2, dataSize);
+            // finds the radius by min circle
+            if (maxC < 0.9) {
+                learnHelper(p, cfStruct, dataSize);
+            }
             cfStruct.lin_reg = linear_reg(p, dataSize);
             // find the dev of each line
             float maxDev = 0;
@@ -90,16 +91,18 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
         cfStruct = *it;
         string f1 = cfStruct.feature1;
         string f2 = cfStruct.feature2;
-        auto t1 = data.find(f1)->second;
-        float *v1 = t1.data();
-        auto t2 = data.find(f2)->second;
-        float *v2 = t2.data();
+        float *v1 = data.find(f1)->second.data();
+        float *v2 = data.find(f2)->second.data();
         auto p = new Point *[dataSize];
         createPointArr(p, v1, v2, dataSize);
 
         // check if there are anomaly by Dev method and the cf threshold
         Line l = cfStruct.lin_reg;
         float t = cfStruct.threshold;
+        // check by min circle
+        if (cfStruct.corrlation < 0.9) {
+            detectHelper(p, cfStruct, ar, dataSize);
+        }
         for (int j = 0; j < dataSize; j++) {
             float d = dev(*p[j], l);
             if (d > t) {
