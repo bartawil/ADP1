@@ -61,7 +61,7 @@ map<string, vector<float>> TimeSeries::getData() const {
 }
 
 int TimeSeries::csvSize() const {
-    return this->data.find(this->features[0])->second.size();
+    return this->data.find(this->features[0])->second.size() - 1;
 }
 
 

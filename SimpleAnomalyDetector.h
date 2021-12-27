@@ -28,7 +28,6 @@ struct correlatedFeatures {
 
 class SimpleAnomalyDetector : public TimeSeriesAnomalyDetector {
     vector<correlatedFeatures> cf;
-    float correlationThreshold = 0.9;
 public:
     SimpleAnomalyDetector();
 
@@ -45,14 +44,6 @@ public:
     virtual void learnHelper(Point** points, correlatedFeatures &cf, size_t size)=0;
 
     virtual void detectHelper(Point** points, correlatedFeatures &cf, vector<AnomalyReport> &ar, size_t size)=0;
-
-    float getCorrelationThreshold() {
-        return correlationThreshold;
-    }
-
-    void setCorrelationThreshold(float newCorrelation) {
-        this->correlationThreshold = newCorrelation;
-    }
 };
 
 
