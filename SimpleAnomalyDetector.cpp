@@ -53,10 +53,6 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             float *v2 = data.find(c)->second.data();
             auto p = new Point *[dataSize];
             createPointArr(p, v1, v2, dataSize);
-            // finds the radius by min circle
-            if (maxC < 0.9) {
-                learnHelper(p, cfStruct, dataSize);
-            }
             cfStruct.lin_reg = linear_reg(p, dataSize);
             // find the dev of each line
             float maxDev = 0;
@@ -67,6 +63,10 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
                 }
             }
             cfStruct.threshold = maxDev * 1.1;
+            // finds the radius by min circle
+            if (maxC < getCorrelationThreshold()) {
+                learnHelper(p, cfStruct, dataSize);
+            }
             // push the struct to vector of correlated features
             this->cf.push_back(cfStruct);
             deletePoints(p, dataSize);
@@ -100,7 +100,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
         Line l = cfStruct.lin_reg;
         float t = cfStruct.threshold;
         // check by min circle
-        if (cfStruct.corrlation < 0.9) {
+        if (cfStruct.corrlation < getCorrelationThreshold()) {
             detectHelper(p, cfStruct, ar, dataSize);
         }
         for (int j = 0; j < dataSize; j++) {

@@ -20,7 +20,7 @@ void HybridAnomalyDetector::learnHelper(Point** points, correlatedFeatures &cf, 
     Circle circle = findMinCircle(points, size);
     cf.point = circle.center;
     cf.radius = circle.radius * 1.1;
-
+    cf.threshold = circle.radius * 1.1;
 }
 
 void HybridAnomalyDetector::detectHelper(Point** points, correlatedFeatures &cf, vector<AnomalyReport> &ar, size_t size) {
