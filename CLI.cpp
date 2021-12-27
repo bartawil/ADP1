@@ -11,14 +11,14 @@
 CLI::CLI(DefaultIO* dio) {
     this->dio = dio;
     this->data = new Data();
-
+    // creat objects from each command class
     this->uploadFiles = new UploadFiles(dio, data);
     this->correlation = new Correlation(dio, data);
     this->anomalyCheck = new AnomalyCheck(dio, data);
     this->printAnomaly = new PrintAnomaly(dio, data);
     this->rate = new Rate(dio, data);
     this->end = new End(dio, data);
-
+    // push all commands to vector
     commands.push_back(this->uploadFiles);
     commands.push_back(this->correlation);
     commands.push_back(this->anomalyCheck);
@@ -29,6 +29,7 @@ CLI::CLI(DefaultIO* dio) {
 
 void CLI::start() {
     int option = 0;
+    // if option is 6 we will exit and end the program
     while (option != 6) {
         dio->write("Welcome to the Anomaly Detection Server.\n"
                    "Please choose an option:\n"
@@ -38,8 +39,7 @@ void CLI::start() {
                    "4.display results\n"
                    "5.upload anomalies and analyze results\n"
                    "6.exit\n");
-        string s = this->dio->read();
-        option = stoi(s);
+        option = stoi(this->dio->read());
         commands.at(option - 1)->execute();
     }
     commands.at(option - 1)->execute();
@@ -47,8 +47,9 @@ void CLI::start() {
 
 
 CLI::~CLI() {
+    delete data->tsTest;
+    delete data->tsTrain;
     delete data;
-
     delete uploadFiles;
     delete correlation;
     delete anomalyCheck;

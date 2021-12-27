@@ -24,7 +24,7 @@ class CLI {
     PrintAnomaly* printAnomaly;
     Rate* rate;
     End* end;
-
+    // saves all program commands
     vector<Command*> commands;
 public:
 	CLI(DefaultIO* dio);

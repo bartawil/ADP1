@@ -34,6 +34,8 @@ public:
 
     virtual ~DefaultIO() {}
 
+    // you may add additional methods here
+    // create a file from input
     void createFile(string fileName) {
         ofstream out(fileName);
         string line = this->read();
@@ -44,11 +46,11 @@ public:
         }
         out.close();
     }
-
-    // you may add additional methods here
 };
 
 // you may add here helper classes
+
+// saves global data for next commands
 class Data{
 public:
     HybridAnomalyDetector hd;
@@ -76,10 +78,12 @@ public:
     UploadFiles(DefaultIO *dio, Data *data) : Command(dio, data) {}
     void execute() {
         dio->write("Please upload your local train CSV file.\n");
+        // train
         dio->createFile( "anomalyTrain.csv");
         this->data->tsTrain = new TimeSeries("anomalyTrain.csv");
         dio->write("Upload complete.\n"
                    "Please upload your local test CSV file.\n");
+        // test
         dio->createFile("anomalyTest.csv");
         this->data->tsTest = new TimeSeries("anomalyTest.csv");
         dio->write("Upload complete.\n");
@@ -119,7 +123,7 @@ public:
         vector<AnomalyReport> vec = this->data->ar;
         int size = this->data->ar.size();
         string description;
-        int timeStep = 0;
+        int timeStep;
         for (int i = 0; i < size; i++) {
             description = vec.at(i).description;
             timeStep = vec.at(i).timeStep;
@@ -134,12 +138,12 @@ public:
 class Rate : public Command {
     vector<pair<int, int>> clientAnomalies;
     vector<pair<string, pair<int, int>>> groupedAnomalies;
-    int n = 0; // total number of lines
-    int p = 0; // number of total report lines
-    float P = 0; // size of reports from client
-    float N = 0; // N = n - p
-    float TP = 0; // number of true positive alarms
-    float FP = 0; // number of false positive alarms
+    int n; // total number of lines
+    int p; // number of total report lines
+    float P; // size of reports from client
+    float N; // N = n - p
+    float TP; // number of true positive alarms
+    float FP; // number of false positive alarms
 public:
     Rate(DefaultIO *dio, Data *data) : Command(dio, data) {}
     void getAnomalies(string line) {
@@ -169,8 +173,8 @@ public:
         vector<AnomalyReport> vec = this->data->ar;
         int size = vec.size();
 
-        int start = 0;
-        int end = 0;
+        int start;
+        int end;
         int tmp;
         string description;
 
@@ -242,6 +246,7 @@ public:
         dio->write("Upload complete.\n");
         // group all anomalies from detector by time step and description
         groupedAr();
+        // check rate
         checkAlarms();
         this->N = this->n - this->p;
         dio->write("True Positive Rate: ");
